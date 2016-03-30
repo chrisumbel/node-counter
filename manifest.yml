@@ -2,7 +2,7 @@
 applications:
 - name: umbel-node-counter
   buildpack: nodejs_buildpack
-  memory: 512M
+  memory: 256M
   command: node app.js
   services:
     - umbel-counter
