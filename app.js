@@ -1,27 +1,24 @@
-var http = require('http');
+var express = require("express");
 var redis = require('redis');
 
 var creds = null;
 
-creds = JSON.parse(process.env.VCAP_SERVICES)['p-redis'][0].credentials;
-var client = redis.createClient(creds.port, creds.host);
-
 console.log('starting');
 
-client.auth(creds.password, function() {
-	var server = http.createServer(function(req, res) {
-		console.log('viewing count ' + i);
+var app = express();
+creds = JSON.parse(process.env.VCAP_SERVICES)['p-redis'][0].credentials;
 
-		var i = client.incr('viewCount', function() {
-			client.get('viewCount', function(err, i) {
-				res.end(i.toString());
-			    });
+console.log(creds);
+var client = redis.createClient(creds.port, creds.host, {auth_pass: creds.password});
+
+app.get("/", function(req, res) { 
+	console.log('viewing count ' + i);
+
+	var i = client.incr('viewCount', function() {
+		client.get('viewCount', function(err, i) {
+			res.end(i.toString());
 		    });
-		
-
 	    });
+    });
 
-	server.listen(8080);
-  });
-
-
+app.listen(process.env.PORT, "0.0.0.0");
