@@ -5,4 +5,4 @@ applications:
   memory: 256M
   command: node app.js
   services:
-    - umbel-counter
+    - umbel-counter-redis-service
